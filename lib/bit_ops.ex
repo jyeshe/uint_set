@@ -13,16 +13,15 @@ defmodule BitOps do
 
   defp count_ones(bigint, count) do
     count = count + (bigint &&& 1)
-    bigint = bigint >>> 1
-    count_ones(bigint, count)
+    count_ones(bigint >>> 1, count)
   end
 
   def get_bit(bigint, index) do
-    bigint >>> index &&& 1
+    (bigint >>> index) &&& 1
   end
 
   def set_bit(bigint, index) do
-    1 <<< index ||| bigint
+    (1 <<< index) ||| bigint
   end
 
   def unset_bit(bigint, index) do
