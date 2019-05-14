@@ -36,7 +36,21 @@ defmodule UintSetTest do
     ]
     |> Enum.each(fn {initial, element, wanted} ->
       result = put(initial, element) |> to_list
-      assert result == wanted, "{#{inspect(initial)}, #{element}, #{wanted}} -> #{result}"
+      assert result == wanted, "{#{inspect(initial)}, #{element}, #{inspect(wanted)}} -> #{inspect(result)}"
+    end)
+  end
+
+  test "new" do
+    [
+      {UintSet.new([]), []},
+      {UintSet.new([0]), [99]},
+      {UintSet.new([1]), [1]},
+      {UintSet.new([1, 2, 3]), [1, 2, 3]},
+      {UintSet.new([1, 1000]), [1, 1000]}
+    ]
+    |> Enum.each(fn {initial, wanted} ->
+      result = initial |> UintSet.to_list()
+      assert result == wanted, "{#{initial.bits}, #{inspect(wanted)}} -> #{inspect(result)}"
     end)
   end
 end

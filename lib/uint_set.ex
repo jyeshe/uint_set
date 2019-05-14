@@ -34,6 +34,16 @@ defmodule UintSet do
     %UintSet{bits: bigint}
   end
 
+  def new(enumerable) do
+    uint_set = %UintSet{}
+
+    enumerable
+    |> Enum.reduce(uint_set, fn item ->
+      put(uint_set, item)
+    end)
+    uint_set
+  end
+
   def to_list(%UintSet{bits: bits}) do
     bits |> list_ones
   end
@@ -45,8 +55,8 @@ defmodule UintSet do
   defimpl Inspect do
     import Inspect.Algebra
 
-    def inspect(map_set, opts) do
-      concat(["#UintSet<", Inspect.List.inspect(UintSet.to_list(map_set), opts), ">"])
+    def inspect(uint_set, opts) do
+      concat(["#UintSet<", Inspect.List.inspect(UintSet.to_list(uint_set), opts), ">"])
     end
   end
 end
