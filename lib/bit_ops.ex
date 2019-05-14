@@ -50,6 +50,10 @@ defmodule BitOps do
     end
   end
 
+  def stream_ones(bigint) when is_integer(bigint) and bigint >= 0 do
+    Stream.unfold({bigint, 0}, &next_one/1)
+  end
+
   defp next_one({0, _index}), do: nil
 
   defp next_one({bigint, index}) do
@@ -59,9 +63,5 @@ defmodule BitOps do
     else
       next_one({bigint >>> 1, index + 1})
     end
-  end
-
-  def stream_ones(bigint) when is_integer(bigint) and bigint >= 0 do
-    Stream.unfold({bigint, 0}, &next_one/1)
   end
 end
