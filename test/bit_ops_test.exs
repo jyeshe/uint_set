@@ -68,9 +68,9 @@ defmodule BitOpsTest do
       {pow(2, 64) - 1, 1, 1},
       {pow(2, 64) - 1, 63, 1}
     ]
-    |> Enum.each(fn {bigint, index, want} ->
-      got = get_bit(bigint, index)
-      assert got == want, "{#{bigint}, #{index}, #{want}} -> #{got}"
+    |> Enum.each(fn {bigint, index, wanted} ->
+      actual = get_bit(bigint, index)
+      assert actual == wanted, "{#{bigint}, #{index}, #{wanted}} -> #{actual}"
     end)
   end
 
@@ -92,9 +92,9 @@ defmodule BitOpsTest do
       {pow(2, 64), 64, pow(2, 64)},
       {pow(2, 64), 65, pow(2, 65) + pow(2, 64)}
     ]
-    |> Enum.each(fn {bigint, index, want} ->
-      got = set_bit(bigint, index)
-      assert got == want, "{#{bigint}, #{index}, #{want}} -> #{got}"
+    |> Enum.each(fn {bigint, index, wanted} ->
+      actual = set_bit(bigint, index)
+      assert actual == wanted, "{#{bigint}, #{index}, #{wanted}} -> #{actual}"
     end)
   end
 
@@ -114,9 +114,9 @@ defmodule BitOpsTest do
       {pow(2, 64) + 1, 0, pow(2, 64)},
       {pow(2, 64), 64, 0}
     ]
-    |> Enum.each(fn {bigint, index, want} ->
-      got = unset_bit(bigint, index)
-      assert got == want, "{#{bigint}, #{index}, #{want}} -> #{got}"
+    |> Enum.each(fn {bigint, index, wanted} ->
+      actual = unset_bit(bigint, index)
+      assert actual == wanted, "{#{bigint}, #{index}, #{wanted}} -> #{actual}"
     end)
   end
 
@@ -135,19 +135,19 @@ defmodule BitOpsTest do
 
   test "list_ones" do
     @ones_fixture
-    |> Enum.each(fn {bigint, want} ->
-      got = list_ones(bigint)
-      assert got == want, "{#{bigint}, #{inspect(want)}} -> #{inspect(got)}"
+    |> Enum.each(fn {bigint, wanted} ->
+      actual = list_ones(bigint)
+      assert actual == wanted, "{#{bigint}, #{inspect(wanted)}} -> #{inspect(actual)}"
     end)
   end
 
   test "stream_ones" do
     @ones_fixture
-    |> Enum.each(fn {bigint, want} ->
+    |> Enum.each(fn {bigint, wanted} ->
       stream = stream_ones(bigint)
       assert is_function(stream, 2)
-      got = Enum.to_list(stream)
-      assert got == want, "{#{bigint}, #{inspect(want)}} -> #{inspect(got)}"
+      actual = Enum.to_list(stream)
+      assert actual == wanted, "{#{bigint}, #{inspect(wanted)}} -> #{inspect(actual)}"
     end)
   end
 end
