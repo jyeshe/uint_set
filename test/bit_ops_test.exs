@@ -66,7 +66,7 @@ defmodule BitOpsTest do
       {pow(2, 64), 64, 1},
       {pow(2, 64) - 1, 0, 1},
       {pow(2, 64) - 1, 1, 1},
-      {pow(2, 64) - 1, 63, 1}
+      {pow(2, 64) - 1, 63, 1},
     ]
     |> Enum.each(fn {bigint, index, want} ->
       got = get_bit(bigint, index)
@@ -90,7 +90,7 @@ defmodule BitOpsTest do
       {0b1_0101_0101, 9, 0b11_0101_0101},
       {pow(2, 64), 0, pow(2, 64) + 1},
       {pow(2, 64), 64, pow(2, 64)},
-      {pow(2, 64), 65, pow(2, 65) + pow(2, 64)}
+      {pow(2, 64), 65, pow(2, 65) + pow(2, 64)},
     ]
     |> Enum.each(fn {bigint, index, want} ->
       got = set_bit(bigint, index)
@@ -112,7 +112,7 @@ defmodule BitOpsTest do
       {0b1_0101_0101, 9, 0b1_0101_0101},
       {pow(2, 64), 0, pow(2, 64)},
       {pow(2, 64) + 1, 0, pow(2, 64)},
-      {pow(2, 64), 64, 0}
+      {pow(2, 64), 64, 0},
     ]
     |> Enum.each(fn {bigint, index, want} ->
       got = unset_bit(bigint, index)
@@ -130,7 +130,7 @@ defmodule BitOpsTest do
     {0b1010_1010, [1, 3, 5, 7]},
     {0b1_0101_0101, [0, 2, 4, 6, 8]},
     {0b1111_1111, 0..7 |> Enum.to_list()},
-    {0b1_1111_1110, 1..8 |> Enum.to_list()}
+    {0b1_1111_1110, 1..8 |> Enum.to_list()},
   ]
 
   test "list_ones" do
