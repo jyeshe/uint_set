@@ -5,6 +5,7 @@ defmodule BitOps do
 
   use Bitwise, only_operators: true
 
+  @spec count_ones(non_neg_integer()) :: non_neg_integer()
   def count_ones(bigint) when is_integer(bigint) and bigint >= 0 do
     count_ones(bigint, 0)
   end
@@ -16,14 +17,17 @@ defmodule BitOps do
     count_ones(bigint >>> 1, count)
   end
 
+  @spec get_bit(integer(), integer()) :: 0 | 1
   def get_bit(bigint, index) do
     (bigint >>> index) &&& 1
   end
 
+  @spec set_bit(integer(), integer()) :: integer()
   def set_bit(bigint, index) do
     (1 <<< index) ||| bigint
   end
 
+  @spec unset_bit(integer(), integer()) :: integer()
   def unset_bit(bigint, index) do
     if get_bit(bigint, index) == 1 do
       (1 <<< index) ^^^ bigint
@@ -31,4 +35,19 @@ defmodule BitOps do
       bigint
     end
   end
+
+  def list_ones(bigint) when is_integer(bigint) and bigint >= 0 do
+    list_ones(bigint, 0, [])
+  end
+
+  defp list_ones(0, _index, list), do: Enum.reverse(list)
+
+  defp list_ones(bigint, index, list) do
+    if (bigint &&& 1) == 1 do
+      list_ones(bigint >>> 1, index + 1, [index|list])
+    else
+      list_ones(bigint >>> 1, index + 1, list)
+    end
+  end
+
 end
