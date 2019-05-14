@@ -49,4 +49,19 @@ defmodule BitOps do
       list_ones(bigint >>> 1, index + 1, list)
     end
   end
+
+  defp next_one({0, _index}), do: nil
+
+  defp next_one({bigint, index}) do
+    # {next_element, new_accumulator}
+    if (bigint &&& 1) == 1 do
+      {index, {bigint >>> 1, index + 1}}
+    else
+      next_one({bigint >>> 1, index + 1})
+    end
+  end
+
+  def stream_ones(bigint) when is_integer(bigint) and bigint >= 0 do
+    Stream.unfold({bigint, 0}, &next_one/1)
+  end
 end
