@@ -130,13 +130,12 @@ defmodule BitOpsTest do
       {0b111, [0, 1, 2]},
       {0b1010_1010, [1, 3, 5, 7]},
       {0b1_0101_0101, [0, 2, 4, 6, 8]},
-      {0b1111_1111, 0..7 |> Enum.to_list},
-      ]
+      {0b1111_1111, 0..7 |> Enum.to_list()},
+      {0b1_1111_1110, 1..8 |> Enum.to_list()}
+    ]
     |> Enum.each(fn {bigint, want} ->
       got = list_ones(bigint)
       assert got == want, "{#{bigint}, #{inspect(want)}} -> #{inspect(got)}"
     end)
   end
-
-
 end

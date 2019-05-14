@@ -19,12 +19,12 @@ defmodule BitOps do
 
   @spec get_bit(integer(), integer()) :: 0 | 1
   def get_bit(bigint, index) do
-    (bigint >>> index) &&& 1
+    bigint >>> index &&& 1
   end
 
   @spec set_bit(integer(), integer()) :: integer()
   def set_bit(bigint, index) do
-    (1 <<< index) ||| bigint
+    1 <<< index ||| bigint
   end
 
   @spec unset_bit(integer(), integer()) :: integer()
@@ -44,10 +44,9 @@ defmodule BitOps do
 
   defp list_ones(bigint, index, list) do
     if (bigint &&& 1) == 1 do
-      list_ones(bigint >>> 1, index + 1, [index|list])
+      list_ones(bigint >>> 1, index + 1, [index | list])
     else
       list_ones(bigint >>> 1, index + 1, list)
     end
   end
-
 end
