@@ -53,7 +53,7 @@ defmodule BitOps do
   defp next_one({0, _index}), do: nil
 
   defp next_one({bigint, index}) do
-    # {next_element, new_accumulator}
+    # Return {next_element, new_accumulator}
     if (bigint &&& 1) == 1 do
       {index, {bigint >>> 1, index + 1}}
     else
