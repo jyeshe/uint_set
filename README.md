@@ -1,6 +1,6 @@
 # UintSet
 
-**TODO: Add description**
+Tweet: I had a lot of fun implementing a new set type in @elixirlang to learn about protocols. It only stores integers >= 0 by using a (big) integer as a bitmap, so intersection is implemented with bitwise AND, union is bitwise OR etc. 
 
 ## Installation
 
