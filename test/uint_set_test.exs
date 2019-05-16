@@ -5,6 +5,15 @@ defmodule UintSetTest do
 
   import UintSet
 
+  test "new/1" do
+    assert UintSet.new(bits: 0b1110) == UintSet.new([1, 2, 3])
+  end
+
+  test "new/2" do
+    result = UintSet.new([1, 2, 3], &(&1 * 10))
+    assert result == UintSet.new([10, 20, 30])
+  end
+
   test "to_list/1 -> []" do
     result = UintSet.new() |> to_list()
     assert result == []

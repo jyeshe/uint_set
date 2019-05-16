@@ -10,6 +10,7 @@ defmodule UintSet do
     Many of the `UintSet` doctests and unit tests were adapted from `MapSet`.
 
     A set can be constructed using `UintSet.new/0`:
+
         iex> UintSet.new()
         #UintSet<[]>
 
@@ -32,6 +33,7 @@ defmodule UintSet do
 
     An `UnitSet` is represented internally using the `%UintSet{}` struct.
     This struct can be used whenever there's a need to pattern match on something being a `MapSet`:
+
         iex> match?(%UintSet{}, UintSet.new())
         true
 
@@ -107,6 +109,12 @@ defmodule UintSet do
 
   def new(enumerable) do
     Enum.reduce(enumerable, %UintSet{}, &UintSet.put(&2, &1))
+  end
+
+  def new(enumerable, transform) when is_function(transform, 1) do
+    enumerable
+    |> Stream.map(transform)
+    |> new
   end
 
   def to_list(%UintSet{bits: bits}) do
