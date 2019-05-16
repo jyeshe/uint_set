@@ -34,27 +34,14 @@ defmodule UintSetTest do
     [
       {UintSet.new(), 0, [0]},
       {UintSet.new(), 1, [1]},
-      {UintSet.new(), 1000, [1000]}
+      {UintSet.new(), 1000, [1000]},
+      {UintSet.new(bits: 0xF0), 9, [4, 5, 6, 7, 9]}
     ]
     |> Enum.each(fn {initial, element, wanted} ->
       result = put(initial, element) |> to_list
 
       assert result == wanted,
              "{#{inspect(initial)}, #{element}, #{inspect(wanted)}} -> #{inspect(result)}"
-    end)
-  end
-
-  test "into/1" do
-    [
-      [],
-      [0],
-      [1],
-      [1, 2, 3],
-      [1, 1000]
-    ]
-    |> Enum.each(fn given ->
-      result = given |> Enum.into(UintSet.new()) |> to_list
-      assert result == given, "{#{inspect(given)}} -> #{inspect(result)}"
     end)
   end
 
@@ -159,6 +146,20 @@ defmodule UintSetTest do
       assert second == set |> Enum.at(1)
       assert has_3 == set |> Enum.member?(3)
       assert reversed == set |> Enum.reverse()
+    end)
+  end
+
+  test "Collectable protocol" do
+    [
+      [],
+      [0],
+      [1],
+      [1, 2, 3],
+      [1, 1000]
+    ]
+    |> Enum.each(fn given ->
+      result = given |> Enum.into(UintSet.new()) |> to_list
+      assert result == given, "{#{inspect(given)}} -> #{inspect(result)}"
     end)
   end
 

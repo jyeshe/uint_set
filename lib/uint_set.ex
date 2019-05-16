@@ -106,9 +106,11 @@ defmodule UintSet do
   end
 
   def new(enumerable) do
-    enumerable
-    # see Collectable protocol below
-    |> Enum.into(UintSet.new())
+    Enum.reduce(
+      enumerable,
+      %UintSet{},
+      &UintSet.put(&2, &1)
+    )
   end
 
   def to_list(%UintSet{bits: bits}) do
@@ -205,18 +207,6 @@ defmodule UintSet do
     end
   end
 
-  defimpl Collectable do
-    def into(original) do
-      collector_fun = fn
-        set, {:cont, elem} -> UintSet.put(set, elem)
-        set, :done -> set
-        _set, :halt -> :ok
-      end
-
-      {original, collector_fun}
-    end
-  end
-
   defimpl Enumerable do
     def count(uint_set) do
       {:ok, UintSet.length(uint_set)}
@@ -232,6 +222,18 @@ defmodule UintSet do
 
     def reduce(uint_set, acc, fun) do
       Enumerable.List.reduce(UintSet.to_list(uint_set), acc, fun)
+    end
+  end
+
+  defimpl Collectable do
+    def into(original) do
+      collector_fun = fn
+        set, {:cont, elem} -> UintSet.put(set, elem)
+        set, :done -> set
+        _set, :halt -> :ok
+      end
+
+      {original, collector_fun}
     end
   end
 end
