@@ -106,11 +106,7 @@ defmodule UintSet do
   end
 
   def new(enumerable) do
-    Enum.reduce(
-      enumerable,
-      %UintSet{},
-      &UintSet.put(&2, &1)
-    )
+    Enum.reduce(enumerable, %UintSet{}, &UintSet.put(&2, &1))
   end
 
   def to_list(%UintSet{bits: bits}) do
