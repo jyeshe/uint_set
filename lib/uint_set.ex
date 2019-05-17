@@ -96,10 +96,6 @@ defmodule UintSet do
 
      This package was inspired by the excellent `intset` example from chapter 6 of
      _The Go Programming Language_, by Alan. A. A. Donovan and Brian W. Kernighan.
-     The implementation in Elixir is much simpler because we can use a single (big) integer
-     while in Go the solution involves managing an `uint64[]` slice which they need to
-     grow and shrink on demand. Also, they need to loop over the slices to perform
-     bitwise operations which in Elixir we do in a single expression like `bits1 &&& bits2`.
   """
 
   use Bitwise, only_operators: true
