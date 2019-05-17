@@ -30,7 +30,7 @@ defmodule UintSet do
         iex> UintSet.new(1..5)
         #UintSet<[1, 2, 3, 4, 5]>
 
-    An `UnitSet` is represented internally using the `%UintSet{}` struct.
+    An `UintSet` is represented internally using the `%UintSet{}` struct.
     This struct can be used whenever there's a need to pattern match on something being a `MapSet`:
 
         iex> match?(%UintSet{}, UintSet.new())
@@ -94,6 +94,12 @@ defmodule UintSet do
      to be implemented using fast bitwise operators. See the source
      code of `UintSet.union` and `UintSet.intersection`.
 
+     This package was inspired by the excellent `intset` example from chapter 6 of
+     _The Go Programming Language_, by Alan. A. A. Donovan and Brian W. Kernighan.
+     The implementation in Elixir is much simpler because we can use a single (big) integer
+     while in Go the solution involves managing an `uint64[]` slice which they need to
+     grow and shrink on demand. Also, they need to loop over the slices to perform
+     bitwise operations which in Elixir we do in a single expression like `bits1 &&& bits2`.
   """
 
   use Bitwise, only_operators: true
@@ -105,7 +111,7 @@ defmodule UintSet do
   @doc """
   Returns a new empty `UintSet`.
 
-  ## Examples
+  ## Example
 
       iex> UintSet.new()
       #UintSet<[]>
