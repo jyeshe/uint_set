@@ -88,8 +88,8 @@ defmodule UintSet do
     to be implemented using fast bitwise operators. See the source
     code of `UintSet.union` and `UintSet.intersection`.
 
-    > This package was inspired by the excellent `intset` example from chapter 6 of
-    > _The Go Programming Language_, by Alan. A. A. Donovan and Brian W. Kernighan.
+    This package was inspired by the excellent `intset` example from chapter 6 of
+    _The Go Programming Language_, by Alan. A. A. Donovan and Brian W. Kernighan.
   """
 
   use Bitwise, only_operators: true
