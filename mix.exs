@@ -10,6 +10,10 @@ defmodule UintSet.MixProject do
       deps: deps(),
       package: package(),
 
+      # Hex
+      description: "A set type designed for dense sets of non-negative integers.",
+      package: package(),
+
       # Docs
       name: "UintSet",
       source_url: "https://github.com/ramalho/uint_set"
