@@ -1,21 +1,19 @@
 # UintSet
 
-Tweet: I had a lot of fun implementing a new set type in @elixirlang to learn about protocols. It only stores integers >= 0 by using a (big) integer as a bitmap, so intersection is implemented with bitwise AND, union is bitwise OR etc. 
+`UintSet` is an alternative set type in Elixir,
+designed to hold only non-negative integer elements.
 
-## Installation
+`UintSet` emulates the full `MapSet` interface,
+except for `MapSet.size` which is replaced by `UintSet.length`.
+Many of the `UintSet` doctests and unit tests were adapted from `MapSet`.
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `uint_set` to your list of dependencies in `mix.exs`:
+`UintSet` illustrates the construction of a functional data structure from scratch,
+implementing protocols—`Inspect`, `Enumerable`, `Collectable`—and a stream.
 
-```elixir
-def deps do
-  [
-    {:uint_set, "~> 0.1.0"}
-  ]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/uint_set](https://hexdocs.pm/uint_set).
-
+All the content of an `UintSet` is represented by a single integer,
+which in Elixir is limited only by available memory.
+Each bit in that integer represents one element:
+a bit `1` at position `n` means the number `n` is present in the set.
+This allows set operations like union and intersection
+to be implemented using fast bitwise operators.
+See the source code of `UintSet.union` and `UintSet.intersection`.
