@@ -1,6 +1,6 @@
 defmodule BitOps do
   @moduledoc """
-  Documentation for BitOps: bit-level operations. This is an module package for `UintSet`.
+  Documentation for BitOps: bit-level operations. This is utility module to support `UintSet`.
 
   All the functions take an integer as the first argument;
   most return a new integer by flipping bits on the first argument,
@@ -36,7 +36,7 @@ defmodule BitOps do
   end
 
   @doc """
-  Get the value of the bit at the index.
+  Get the value of the bit at the `index`.
 
   ## Examples
 
@@ -53,7 +53,7 @@ defmodule BitOps do
   end
 
   @doc """
-  Set the bit at index to 1.
+  Set the bit at `index` to `1`.
 
   ## Examples
 
@@ -68,7 +68,7 @@ defmodule BitOps do
   end
 
   @doc """
-  Set the bit at index to 0.
+  Set the bit at `index` to `0`.
 
   ## Examples
 
@@ -87,7 +87,7 @@ defmodule BitOps do
   end
 
   @doc """
-  Return a list of all indexes with bit value 1.
+  Return a list of all indexes with bit value `1`.
 
   ## Examples
 
@@ -111,7 +111,7 @@ defmodule BitOps do
   end
 
   @doc """
-  Returns a stream function yielding the indexes with bit value 1.
+  Returns a stream function yielding the indexes with bit value `1`.
   The stream lazily traverses the bits of the integer as needed.
 
   ## Examples
