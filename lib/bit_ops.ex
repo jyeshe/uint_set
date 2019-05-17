@@ -1,6 +1,7 @@
 defmodule BitOps do
   @moduledoc """
-  BitOps provides bit-level operations on integers. This is a utility module to support `UintSet`.
+  BitOps provides bit-level operations on integers.
+  This is a low level utility module to support `UintSet`.
 
   All the functions take an integer as the first argument;
   most return new integers by flipping bits on the first argument,
