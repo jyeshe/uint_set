@@ -31,7 +31,7 @@ defmodule UintSet do
         #UintSet<[1, 2, 3, 4, 5]>
 
     An `UintSet` is represented internally using the `%UintSet{}` struct.
-    This struct can be used whenever there's a need to pattern match on something being a `MapSet`:
+    This struct can be used whenever there's a need to pattern match on something being an `UintSet`:
 
         iex> match?(%UintSet{}, UintSet.new())
         true
@@ -250,7 +250,7 @@ defmodule UintSet do
   @doc """
   Returns the number of elements in `uint_set`.
   This function is named `length` because it needs to traverse the `uint_set`,
-  so it runs on O(n) time. The corresponding function in `MapSet` is `size`.
+  so it runs in O(n) time. The corresponding function in `MapSet` is `size`.
 
   ## Example
 
