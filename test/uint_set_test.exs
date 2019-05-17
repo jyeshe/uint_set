@@ -176,9 +176,9 @@ defmodule UintSetTest do
     result =
       UintSet.new(1..5)
       |> UintSet.stream()
-      |> Stream.into([])
+      |> Stream.map(&(&1 * 2))
       |> Enum.to_list()
 
-    assert result == [1, 2, 3, 4, 5]
+    assert result == [2, 4, 6, 8, 10]
   end
 end

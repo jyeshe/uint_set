@@ -4,10 +4,9 @@ defmodule UintSet do
 
     `UintSet` is an alternative set type in Elixir
     emulating the `MapSet` interface as closely as possible.
+    Many of the `UintSet` doctests and unit tests were adapted from `MapSet`.
     `UintSet` illustrates the construction of a functional data structure from scratch,
     implementing the `Inspect`, `Enumerable`, and `Collectable` protocols.
-
-    Many of the `UintSet` doctests and unit tests were adapted from `MapSet`.
 
     A set can be constructed using `UintSet.new/0`:
 
@@ -23,7 +22,7 @@ defmodule UintSet do
         #UintSet<[]>
         iex> UintSet.put(uint_set, 3)
         #UintSet<[3]>
-        iex> UintSet.put(uint_set, 2) |> UintSet.put(3)
+        iex> uint_set |> UintSet.put(2) |> UintSet.put(3)
         #UintSet<[2, 3]>
 
     `UintSet.new/1` accepts an enumerable of elements:
@@ -86,6 +85,14 @@ defmodule UintSet do
         iex> UintSet.new(bits: 0b1111)
         #UintSet<[0, 1, 2, 3]>
 
+    `UintSet`s can also be constructed starting from other collection-type data
+     structures: for example, see `UintSet.new/1` or `Enum.into/2`.
+
+     All the content of an `UintSet` is represented by a single integer,
+     which in Elixir is limited only by available memory.
+     This allows set operations like union and intersection
+     to be implemented using fast bitwise operators. See the source
+     code of `UintSet.union` and `UintSet.intersection`.
 
   """
 
@@ -96,77 +103,85 @@ defmodule UintSet do
   defstruct bits: 0
 
   @doc """
-  Returns a new `UintSet`.
+  Returns a new empty `UintSet`.
+
   ## Examples
+
       iex> UintSet.new()
       #UintSet<[]>
+
   """
   def new(), do: %UintSet{}
 
+  @doc """
+  Returns a new `UintSet` reading the given integer as a bit pattern.
+
+  ## Examples
+
+      iex> UintSet.new(bits: 0)
+      #UintSet<[]>
+      iex> UintSet.new(bits: 1)
+      #UintSet<[0]>
+      iex> UintSet.new(bits: 2)
+      #UintSet<[1]>
+      iex> UintSet.new(bits: 3)
+      #UintSet<[0, 1]>
+      iex> UintSet.new(bits: 0b111010)
+      #UintSet<[1, 3, 4, 5]>
+
+  """
   def new(bits: bigint) when is_integer(bigint) and bigint >= 0 do
     %UintSet{bits: bigint}
   end
 
+  @doc """
+  Creates a set from an enumerable.
+
+  ## Examples
+
+      iex> UintSet.new([10, 5, 7])
+      #UintSet<[5, 7, 10]>
+      iex> UintSet.new(3..7)
+      #UintSet<[3, 4, 5, 6, 7]>
+      iex> UintSet.new([3, 3, 3, 2, 2, 1])
+      #UintSet<[1, 2, 3]>
+
+  """
   def new(enumerable) do
     Enum.reduce(enumerable, %UintSet{}, &UintSet.put(&2, &1))
   end
 
+  @doc """
+  Creates a set from an enumerable via the transformation function.
+
+  ## Examples
+
+      iex> UintSet.new([1, 3, 1], fn x -> 2 * x end)
+      #UintSet<[2, 6]>
+
+  """
   def new(enumerable, transform) when is_function(transform, 1) do
     enumerable
     |> Stream.map(transform)
     |> new
   end
 
-  def to_list(%UintSet{bits: bits}) do
-    bits |> list_ones
-  end
-
-  def put(%UintSet{bits: bits}, elem) do
-    %UintSet{bits: set_bit(bits, elem)}
-  end
-
   @doc """
   Deletes `value` from `uint_set`.
+
   Returns a new set which is a copy of `uint_set` but without `value`.
+
   ## Examples
+
       iex> uint_set = UintSet.new([1, 2, 3])
       iex> UintSet.delete(uint_set, 4)
       #UintSet<[1, 2, 3]>
       iex> UintSet.delete(uint_set, 2)
       #UintSet<[1, 3]>
+
   """
   def delete(%UintSet{bits: bits}, elem) do
     %UintSet{bits: unset_bit(bits, elem)}
-  end
-
-  def member?(%UintSet{bits: bits}, elem) do
-    get_bit(bits, elem) == 1
-  end
-
-  def equal?(%UintSet{bits: bits1}, %UintSet{bits: bits2}) do
-    bits1 == bits2
-  end
-
-  @doc """
-  Returns the number of elements in `uint_set`.
-  This function is named `length` because it needs to traverse the `uint_set`,
-  so it runs on O(n) time. The corresponding function in `MapSet` is `size`.
-
-  ## Example
-
-      iex> UintSet.length(UintSet.new([10, 20, 30]))
-      3
-  """
-  def length(%UintSet{bits: bits}) do
-    bits |> count_ones
-  end
-
-  def union(%UintSet{bits: bits1}, %UintSet{bits: bits2}) do
-    %UintSet{bits: bits1 ||| bits2}
-  end
-
-  def intersection(%UintSet{bits: bits1}, %UintSet{bits: bits2}) do
-    %UintSet{bits: bits1 &&& bits2}
   end
 
   @doc """
@@ -195,20 +210,140 @@ defmodule UintSet do
     (bits1 &&& bits2) == 0
   end
 
-  def subset?(set1, set2) do
-    difference(set1, set2).bits == 0
+  @doc """
+  Checks if two sets are equal.
+
+  ## Examples
+
+      iex> UintSet.equal?(UintSet.new([1, 2]), UintSet.new([2, 1, 1]))
+      true
+      iex> UintSet.equal?(UintSet.new([1, 2]), UintSet.new([3, 4]))
+      false
+
+  """
+  def equal?(%UintSet{bits: bits1}, %UintSet{bits: bits2}) do
+    bits1 == bits2
   end
 
+  @doc """
+  Returns a set containing only members that `uint_set1` and `uint_set2` have in common.
+
+  ## Examples
+
+      iex> UintSet.intersection(UintSet.new([1, 2]), UintSet.new([2, 3, 4]))
+      #UintSet<[2]>
+
+      iex> UintSet.intersection(UintSet.new([1, 2]), UintSet.new([3, 4]))
+      #UintSet<[]>
+
+  """
+  def intersection(%UintSet{bits: bits1}, %UintSet{bits: bits2}) do
+    %UintSet{bits: bits1 &&& bits2}
+  end
+
+  @doc """
+  Returns the number of elements in `uint_set`.
+  This function is named `length` because it needs to traverse the `uint_set`,
+  so it runs on O(n) time. The corresponding function in `MapSet` is `size`.
+
+  ## Example
+
+      iex> UintSet.length(UintSet.new([10, 20, 30]))
+      3
+
+  """
+  def length(%UintSet{bits: bits}) do
+    bits |> count_ones
+  end
+
+  @doc """
+  Checks if `uint_set` contains `value`.
+
+  ## Examples
+
+      iex> UintSet.member?(UintSet.new([1, 2, 3]), 2)
+      true
+      iex> UintSet.member?(UintSet.new([1, 2, 3]), 4)
+      false
+
+  """
+  def member?(%UintSet{bits: bits}, elem) do
+    get_bit(bits, elem) == 1
+  end
+
+  @doc """
+  Inserts `value` into `uint_set` if `uint_set` doesn't already contain it.
+
+  ## Examples
+
+      iex> UintSet.put(UintSet.new([1, 2, 3]), 3)
+      #UintSet<[1, 2, 3]>
+      iex> UintSet.put(UintSet.new([1, 2, 3]), 4)
+      #UintSet<[1, 2, 3, 4]>
+
+  """
+  def put(%UintSet{bits: bits}, elem) do
+    %UintSet{bits: set_bit(bits, elem)}
+  end
+
+  @doc """
+  Returns a stream function yielding the elements of `uint_set` one by one in ascending order.
+  The stream lazily traverses the bits of the `uint_set` as needed.
+
+  ## Examples
+
+      iex> uint_stream = UintSet.new([10, 5, 7]) |> UintSet.stream
+      iex> uint_stream |> is_function
+      true
+      iex> uint_stream |> Stream.map(&(&1 * 10)) |> Enum.to_list
+      [50, 70, 100]
+
+  """
   def stream(%UintSet{bits: bits}) do
     stream_ones(bits)
   end
 
-  defimpl Inspect do
-    import Inspect.Algebra
+  @doc """
+  Checks if `uint_set1`'s members are all contained in `uint_set2`.
 
-    def inspect(uint_set, opts) do
-      concat(["#UintSet<", Inspect.List.inspect(UintSet.to_list(uint_set), opts), ">"])
-    end
+  This function checks if `uint_set1` is a subset of `uint_set2`.
+
+  ## Examples
+
+      iex> UintSet.subset?(UintSet.new([1, 2]), UintSet.new([1, 2, 3]))
+      true
+      iex> UintSet.subset?(UintSet.new([1, 2, 3]), UintSet.new([1, 2]))
+      false
+
+  """
+  def subset?(set1, set2) do
+    difference(set1, set2).bits == 0
+  end
+
+  @doc """
+  Converts `uint_set` to a list.
+
+  ## Examples
+
+      iex> UintSet.to_list(UintSet.new([2, 3, 1]))
+      [1, 2, 3]
+
+  """
+  def to_list(%UintSet{bits: bits}) do
+    bits |> list_ones
+  end
+
+  @doc """
+  Returns a set containing all members of `uint_set1` and `uint_set2`.
+
+  ## Examples
+
+      iex> UintSet.union(UintSet.new([1, 2]), UintSet.new([2, 3, 4]))
+      #UintSet<[1, 2, 3, 4]>
+
+  """
+  def union(%UintSet{bits: bits1}, %UintSet{bits: bits2}) do
+    %UintSet{bits: bits1 ||| bits2}
   end
 
   defimpl Enumerable do
@@ -238,6 +373,14 @@ defmodule UintSet do
       end
 
       {original, collector_fun}
+    end
+  end
+
+  defimpl Inspect do
+    import Inspect.Algebra
+
+    def inspect(uint_set, opts) do
+      concat(["#UintSet<", Inspect.List.inspect(UintSet.to_list(uint_set), opts), ">"])
     end
   end
 end
