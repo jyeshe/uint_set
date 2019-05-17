@@ -294,10 +294,10 @@ defmodule UintSet do
 
   ## Examples
 
-      iex> uint_stream = UintSet.new([10, 5, 7]) |> UintSet.stream
-      iex> uint_stream |> is_function
+      iex> my_stream = UintSet.new([10, 5, 7]) |> UintSet.stream
+      iex> my_stream |> is_function
       true
-      iex> uint_stream |> Stream.map(&(&1 * 10)) |> Enum.to_list
+      iex> my_stream |> Stream.map(&(&1 * 10)) |> Enum.to_list
       [50, 70, 100]
 
   """
@@ -318,8 +318,8 @@ defmodule UintSet do
       false
 
   """
-  def subset?(set1, set2) do
-    difference(set1, set2).bits == 0
+  def subset?(uint_set1, uint_set2) do
+    difference(uint_set1, uint_set2).bits == 0
   end
 
   @doc """
