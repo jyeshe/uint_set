@@ -8,19 +8,13 @@ defmodule UintSet do
     `UintSet` illustrates the construction of a functional data structure from scratch,
     implementing the `Inspect`, `Enumerable`, and `Collectable` protocols.
 
-    A set can be constructed using `UintSet.new/0`:
-
-        iex> UintSet.new()
-        #UintSet<[]>
-
     An `UintSet` can contain only non-negative integers.
-    By definition, sets can't contain duplicate elements:
-    when inserting an elem in a set where it's already present,
-    the insertion is simply a no-op.
+    By definition, sets contain unique elements.
+    Trying to insert a duplicate is a no-op:
 
         iex> uint_set = UintSet.new()
         #UintSet<[]>
-        iex> UintSet.put(uint_set, 3)
+        iex> uint_set = UintSet.put(uint_set, 3)
         #UintSet<[3]>
         iex> uint_set |> UintSet.put(2) |> UintSet.put(3)
         #UintSet<[2, 3]>
@@ -37,10 +31,10 @@ defmodule UintSet do
         true
 
     The `%UintSet{}` struct contains a single field—`bits`—
-    an integer which is used as a bitmap where each set bit represents
+    an integer which is used as a bit vector where each bit set to `1` represents
     a number present in the set.
 
-    An empty set is represented by `bits = 0`:
+    An empty set is stored as `bits = 0`:
 
         iex> empty = UintSet.new()
         iex> empty.bits
@@ -48,8 +42,8 @@ defmodule UintSet do
         iex> UintSet.member?(empty, 0)
         false
 
-    A set containing a single 0 is represented by `bits = 1`,
-    because the bit at 0 is set, so the element 0 is present:
+    A set containing just a `0` is stored as `bits = 1`,
+    because the bit at `0` is set, so the element `0` is present:
 
         iex> set_with_zero = UintSet.new([0])
         iex> set_with_zero.bits
@@ -57,8 +51,8 @@ defmodule UintSet do
         iex> UintSet.member?(set_with_zero, 0)
         true
 
-    A set with a single 2 is represented by `bits = 4`,
-    because the bit at 2 is set, so the element 2 is present:
+    A set with a `2` is stored as `bits = 4`,
+    because the bit at `2` is set, so the element `2` is present:
 
         iex> set_with_two = UintSet.new([2])
         iex> set_with_two.bits
@@ -66,8 +60,8 @@ defmodule UintSet do
         iex> UintSet.member?(set_with_two, 2)
         true
 
-    A set with the numbers 0 and 1 is represented by `bits = 3`,
-    because 3 is 0b11, so the bits 0 and 1 are set:
+    A set with the elements `0` and `1` is stored as `bits = 3`,
+    because `3` is `0b11`, so the bits at `0` and `1` are set:
 
         iex> set_with_zero_and_one = UintSet.new([0, 1])
         #UintSet<[0, 1]>
@@ -77,25 +71,25 @@ defmodule UintSet do
     The `UintSet.new/1` function also accepts a keyword argument
     setting the initial value of the `bits` field:
 
-        iex> UintSet.new(bits: 15)
-        #UintSet<[0, 1, 2, 3]>
+        iex> UintSet.new(bits: 13)
+        #UintSet<[0, 2, 3]>
 
     This is easier to understand using base 2 notation for the argument:
 
-        iex> UintSet.new(bits: 0b1111)
-        #UintSet<[0, 1, 2, 3]>
+        iex> UintSet.new(bits: 0b1101)
+        #UintSet<[0, 2, 3]>
 
     `UintSet`s can also be constructed starting from other collection-type data
-     structures: for example, see `UintSet.new/1` or `Enum.into/2`.
+    structures: for example, see `UintSet.new/1` or `Enum.into/2`.
 
-     All the content of an `UintSet` is represented by a single integer,
-     which in Elixir is limited only by available memory.
-     This allows set operations like union and intersection
-     to be implemented using fast bitwise operators. See the source
-     code of `UintSet.union` and `UintSet.intersection`.
+    All the content of an `UintSet` is represented by a single integer,
+    which in Elixir is limited only by available memory.
+    This allows set operations like union and intersection
+    to be implemented using fast bitwise operators. See the source
+    code of `UintSet.union` and `UintSet.intersection`.
 
-     This package was inspired by the excellent `intset` example from chapter 6 of
-     _The Go Programming Language_, by Alan. A. A. Donovan and Brian W. Kernighan.
+    > This package was inspired by the excellent `intset` example from chapter 6 of
+    > _The Go Programming Language_, by Alan. A. A. Donovan and Brian W. Kernighan.
   """
 
   use Bitwise, only_operators: true
