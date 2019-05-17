@@ -1,12 +1,10 @@
 defmodule BitOps do
   @moduledoc """
-  Documentation for BitOps: bit-level operations. This is utility module to support `UintSet`.
+  BitOps provides bit-level operations on integers. This is a utility module to support `UintSet`.
 
   All the functions take an integer as the first argument;
-  most return a new integer by flipping bits on the first argument,
-  returning a specific bit value, or counting the number of bits set.
-
-  The two functions that do not return integers are `list_ones` and `stream_ones`.
+  most return new integers by flipping bits on the first argument,
+  returning the value of a specific bit, or finding bits set to `1`.
   """
 
   use Bitwise, only_operators: true
