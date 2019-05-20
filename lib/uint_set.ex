@@ -84,11 +84,11 @@ defmodule UintSet do
 
     All the content of an `UintSet` is represented by a single integer,
     which in Elixir is limited only by available memory.
-    This allows set operations like union and intersection
+    Using an integer as a bit vector allows set operations like union and intersection
     to be implemented using fast bitwise operators.
     See the source code of `UintSet.union` and `UintSet.intersection`.
 
-    This representation is efficient only for sets of small integers,
+    A bit vector is efficient only for storing sets of small integers,
     or high-density sets where a large percentage of the possible elements are present.
     The memory usage is proportional only to the largest element stored,
     not to the number of elements present.
