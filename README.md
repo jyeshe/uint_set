@@ -41,8 +41,17 @@ Here is how Donovan & Kernighan introduce the example:
 > a specialized representation may outperform it. For example, in domains 
 > such as dataflow analysis where set elements are small non-negative integers,
 > sets have many elements, and set operations like union and intersection are common,
-> a *bit_vector* is ideal.
+> a *bit vector* is ideal.
 
-Implementing `intset` in Elixir is easier than in Go, because we can use a single (big) integer to hold the bit vector.
-The Go example uses an `uint64[]` slice (dynamic array) to store elements in blocks of 64 bits. They need to grow and shrink the slice on demand, and they need to loop over slices performing bitwise operations in each 64-bit block, which
-in Elixir we do in a single expression like `bits1 &&& bits2`.
+## About the implementation
+
+Storing a set as a bit vector is efficient only for sets of small integers,
+or high-density sets where a large percentage of the possible elements are present.
+The memory usage is proportional to the largest element stored,
+not to the number of elements in the set.
+For example, if the largest element is 1_000_000,
+the bit vector size will be 125_000 bytes (⅛),
+regardless of the number of elements in the set.
+
+Donovan & Kerninghan's example uses an `uint64[]` slice (dynamic array) to store elements in blocks of 64 bits. They loop over slices performing bitwise operations in each 64-bit block, which
+in Elixir we do in a single expression like `bits1 &&& bits2` because the bit vector is stored in a single integer. Go also has a `big.Int` type, but they chose not to use it.
