@@ -85,10 +85,18 @@ defmodule UintSet do
     All the content of an `UintSet` is represented by a single integer,
     which in Elixir is limited only by available memory.
     This allows set operations like union and intersection
-    to be implemented using fast bitwise operators. See the source
-    code of `UintSet.union` and `UintSet.intersection`.
+    to be implemented using fast bitwise operators.
+    See the source code of `UintSet.union` and `UintSet.intersection`.
 
-    This package was inspired by the excellent `intset` example from chapter 6 of
+    This representation is efficient only for sets of small integers,
+    or high-density sets where a large percentage of the possible elements are present.
+    The memory usage is proportional only to the largest element stored,
+    not to the number of elements present.
+    If the largest element in a set is 1_000_000,
+    the raw bits will take 125_000 bytes (⅛),
+    regardless of the number of elements in the set.
+
+    This package was inspired by the `intset` example from chapter 6 of
     _The Go Programming Language_, by Alan. A. A. Donovan and Brian W. Kernighan.
   """
 

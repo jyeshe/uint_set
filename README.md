@@ -1,7 +1,7 @@
 # UintSet
 
 [`UintSet`](https://hexdocs.pm/uint_set/UintSet.html) is an alternative set type in Elixir,
-designed to hold non-negative integer elements.
+designed to hold sets of small, non-negative integers.
 
 `UintSet` emulates the full `MapSet` interface,
 except for `MapSet.size` which is replaced by `UintSet.length`.
@@ -30,9 +30,19 @@ See the source code of `UintSet.intersection` and `UintSet.difference`.
 
 Documentation with examples: https://hexdocs.pm/uint_set/UintSet.html.
 
-> This package was inspired by the excellent `intset` example from chapter 6 of
-> _The Go Programming Language_, by Alan. A. A. Donovan and Brian W. Kernighan.
-> The implementation in Elixir is much simpler because we can use a single (big) integer to hold the bit vector.
-> The Go example manages an `uint64[]` slice which they need to grow and shrink on demand.
-> Also, they need to loop over the slices performing bitwise operations which
-> in Elixir we do in a single expression like `bits1 &&& bits2`.
+## Source of this idea
+
+This package was inspired by the excellent [`intset` example](https://github.com/adonovan/gopl.io/blob/master/ch6/intset/intset.go) from chapter 6 of
+[_The Go Programming Language_](http://www.gopl.io/), by Alan. A. A. Donovan and Brian W. Kernighan.
+
+Here is how Donovan & Kernighan introduce the example:
+
+> A set represented by a map is very flexible but, for certain problems,
+> a specialized representation may outperform it. For example, in domains 
+> such as dataflow analysis where set elements are small non-negative integers,
+> sets have many elements, and set operations like union and intersection are common,
+> a *bit_vector* is ideal.
+
+Implementing `intset` in Elixir is easier than in Go, because we can use a single (big) integer to hold the bit vector.
+The Go example uses an `uint64[]` slice (dynamic array) to store elements in blocks of 64 bits. They need to grow and shrink the slice on demand, and they need to loop over slices performing bitwise operations in each 64-bit block, which
+in Elixir we do in a single expression like `bits1 &&& bits2`.
