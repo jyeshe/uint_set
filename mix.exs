@@ -4,14 +4,14 @@ defmodule UintSet.MixProject do
   def project do
     [
       app: :uint_set,
-      version: "0.1.1",
+      version: "0.1.3",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       package: package(),
 
       # Hex
-      description: "A set type designed for dense sets of non-negative integers.",
+      description: "A set type for small non-negative integers.",
       package: package(),
 
       # Docs

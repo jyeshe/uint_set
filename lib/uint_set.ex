@@ -1,6 +1,6 @@
 defmodule UintSet do
   @moduledoc """
-    Functions that work on sets of integers >= 0.
+    Functions that work on sets of small integers >= 0.
 
     `UintSet` is an alternative set type in Elixir
     emulating the `MapSet` interface as closely as possible.
@@ -16,7 +16,7 @@ defmodule UintSet do
         #UintSet<[]>
         iex> uint_set = UintSet.put(uint_set, 3)
         #UintSet<[3]>
-        iex> uint_set |> UintSet.put(2) |> UintSet.put(3)
+        iex> uint_set |> UintSet.put(2) |> UintSet.put(2)
         #UintSet<[2, 3]>
 
     `UintSet.new/1` accepts an enumerable of elements:
@@ -184,8 +184,8 @@ defmodule UintSet do
       #UintSet<[1, 3]>
 
   """
-  def delete(%UintSet{bits: bits}, elem) do
-    %UintSet{bits: unset_bit(bits, elem)}
+  def delete(%UintSet{bits: bits}, value) do
+    %UintSet{bits: unset_bit(bits, value)}
   end
 
   @doc """
@@ -195,6 +195,7 @@ defmodule UintSet do
 
       iex> UintSet.difference(UintSet.new([1, 2]), UintSet.new([2, 3, 4]))
       #UintSet<[1]>
+
   """
   def difference(%UintSet{bits: bits1}, %UintSet{bits: bits2}) do
     %UintSet{bits: bits1 &&& bits2 ^^^ bits1}
@@ -209,6 +210,7 @@ defmodule UintSet do
       true
       iex> UintSet.disjoint?(UintSet.new([1, 2]), UintSet.new([2, 3]))
       false
+
   """
   def disjoint?(%UintSet{bits: bits1}, %UintSet{bits: bits2}) do
     (bits1 &&& bits2) == 0
@@ -271,8 +273,8 @@ defmodule UintSet do
       false
 
   """
-  def member?(%UintSet{bits: bits}, elem) do
-    get_bit(bits, elem) == 1
+  def member?(%UintSet{bits: bits}, value) do
+    get_bit(bits, value) == 1
   end
 
   @doc """
@@ -286,8 +288,8 @@ defmodule UintSet do
       #UintSet<[1, 2, 3, 4]>
 
   """
-  def put(%UintSet{bits: bits}, elem) do
-    %UintSet{bits: set_bit(bits, elem)}
+  def put(%UintSet{bits: bits}, value) do
+    %UintSet{bits: set_bit(bits, value)}
   end
 
   @doc """
@@ -325,7 +327,7 @@ defmodule UintSet do
   end
 
   @doc """
-  Converts `uint_set` to a list.
+  Returns a list containing all members of `uint_set` in ascending order.
 
   ## Examples
 
