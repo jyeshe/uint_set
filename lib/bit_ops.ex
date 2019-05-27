@@ -101,12 +101,12 @@ defmodule BitOps do
 
   defp list_ones(0, _index, list), do: Enum.reverse(list)
 
+  defp list_ones(bigint, index, list) when (bigint &&& 1) == 1 do
+    list_ones(bigint >>> 1, index + 1, [index | list])
+  end
+
   defp list_ones(bigint, index, list) do
-    if (bigint &&& 1) == 1 do
-      list_ones(bigint >>> 1, index + 1, [index | list])
-    else
-      list_ones(bigint >>> 1, index + 1, list)
-    end
+    list_ones(bigint >>> 1, index + 1, list)
   end
 
   @doc """
@@ -128,12 +128,13 @@ defmodule BitOps do
 
   defp next_one({0, _index}), do: nil
 
-  defp next_one({bigint, index}) do
+  defp next_one({bigint, index}) when (bigint &&& 1) == 1 do
     # Return {next_element, new_accumulator}
-    if (bigint &&& 1) == 1 do
-      {index, {bigint >>> 1, index + 1}}
-    else
-      next_one({bigint >>> 1, index + 1})
-    end
+    {index, {bigint >>> 1, index + 1}}
+  end
+
+  defp next_one({bigint, index}) do
+    # Shift bigint, increment index, try again
+    next_one({bigint >>> 1, index + 1})
   end
 end
