@@ -115,7 +115,7 @@ defmodule UintSet do
       #UintSet<[]>
 
   """
-  def new(), do: %UintSet{}
+  def new, do: %UintSet{}
 
   @doc """
   Returns a new `UintSet` reading the given integer as a bit pattern.
