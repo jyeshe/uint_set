@@ -47,7 +47,7 @@ defmodule UintSetTest do
       {UintSet.new(bits: 0xF0), 9, [4, 5, 6, 7, 9]}
     ]
     |> Enum.each(fn {initial, element, wanted} ->
-      result = put(initial, element) |> to_list
+      result = initial |> put(element) |> to_list
 
       assert result == wanted,
              "{#{inspect(initial)}, #{element}, #{inspect(wanted)}} -> #{inspect(result)}"
@@ -56,9 +56,9 @@ defmodule UintSetTest do
 
   test "member/1" do
     refute UintSet.new() |> UintSet.member?(0)
-    assert UintSet.new([0]) |> UintSet.member?(0)
-    assert UintSet.new([1, 1000]) |> UintSet.member?(1000)
-    refute UintSet.new([1, 1000]) |> UintSet.member?(0)
+    assert [0] |>UintSet.new() |> UintSet.member?(0)
+    assert [1, 1000] |> UintSet.new() |> UintSet.member?(1000)
+    refute [1, 1000] |> UintSet.new() |> UintSet.member?(0)
   end
 
   # the following tests were adapted from elixir/map_set_test.exs
@@ -174,7 +174,8 @@ defmodule UintSetTest do
 
   test "stream/1" do
     result =
-      UintSet.new(1..5)
+      1..5
+      |> UintSet.new()
       |> UintSet.stream()
       |> Stream.map(&(&1 * 2))
       |> Enum.to_list()
